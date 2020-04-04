@@ -1,0 +1,128 @@
+* { font-family: 'Times New Roman', Comic-sans, Candara, Garamond;
+margin:0;
+padding:0;
+}
+
+body{background-color:rgb(193, 154, 107)} 
+
+
+.startPrompt{
+	display: block;
+	text-align: center;	
+	font-size: 5vw;
+	overflow: hidden;
+
+}
+
+.inputs{
+	font-size: 20px;
+	margin-left: auto;
+	margin-right:auto;
+}
+
+.startingLetters{
+
+	font-size: 1em;
+	height: 10vh;
+	min-height: 45px;
+	width:2em;
+	min-width: 35px;
+	
+}
+
+.startLetterLabel{
+	font-size: 30px;
+}
+
+
+
+.startBtn{
+
+	margin: 0px 2vw;
+	position: relative;
+	min-width: 100px;
+	min-height: 45px;
+	width: 11vw;
+	height: 10vh;
+}
+
+.resetBtn{
+
+	margin: 0px 2vw;
+	position: relative;
+	min-width: 100px;
+	min-height: 45px;
+	width: 11vw;
+	height: 10vh;
+}
+
+
+.menuVisibility{
+	display: inline-block;
+}
+
+.playingField{
+	user-select: none;
+	text-align: center;
+	width: 100%;
+	height:100%;
+	background-color: rgb(193, 154, 107);
+
+}
+.square{
+	margin: 1%;
+	font-size: 5vw;
+	text-align: center;
+	line-height: 180%;
+	border: .5px solid rgb(30,15,15);
+	box-sizing: border-box;
+	display: inline-block;
+	min-width: 20px;
+	min-height: 20px;
+	width: 15vw;
+	height: 10vw;
+	background-color: rgb(100, 54, 17);
+	border-radius: 3px;
+	transition: .3s ease-in-out;
+}
+.active:hover{
+	background-color: rgb(150, 84, 67);
+	transition: .3s ease-in-out;
+}
+
+.squareSelected{
+	background-color: rgb(150, 84, 115);
+}
+.guessedAnimation{
+	animation: spin 3s;
+}
+
+@keyframes spin{		/*Testing some animation effects when a square is selected*/
+	0%{transform: rotate3d(0, 1, 0, 0deg);}
+	50%{transform: rotate3d(0, 1, 0, 540deg);}
+	100%{transform: rotate3d(0, 1, 0, 360deg);}
+}
+
+.squareWrong{
+	background-color: red;
+}
+.squareGuessed{
+	background-color: green;
+}
+
+.hidden{
+	opacity: 0;
+	transition: .3s ease-in-out;
+}
+
+.clockDiv{
+	font-size:10px;
+	position: fixed;
+	top: 0px;
+	left:0px;
+	height: 50px;
+	width: 50px;
+	background-color: red;
+	opacity: 0.7;
+}
+

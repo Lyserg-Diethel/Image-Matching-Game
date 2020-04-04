@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Image Matching</title>
+	<link rel="stylesheet" type="text/css" href="styles/style.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial scale=1.0">
+	<meta name="description" content="Image matching game">
+
+
+
+</head>
+
+<body>
+
+ <div class='startPrompt'>
+ 	<label for='startingLetters' class="startLetterLabel">Select amount of pairs to match (up to 26):</label>
+ 	<div class="clockDiv hidden">
+ 		<div class="clockFace"></div>
+ 		<div class="clockNumbers"></div>
+ 	</div>
+ 	<br>
+	<div class="inputs menuVisibility">
+		<!--<button class='resetBtn menuVisibility'>Reset</button>-->
+	 	<input type="number" name="startingLetters" class="startingLetters menuVisibility" autofocus>
+	 	<button class='startBtn menuVisibility'>Start</button><br>
+ 		<label for='startingLetters' class="timeTrialLabel menuVisibility" >Time trial mode:</label>
+	 	<input type="checkbox" name="timeTrialMode" class="timeTrialCheckbox menuVisibility" title='Check here if you want to track complation time.'>
+ 	</div>
+ 	
+ 	
+
+ </div>
+
+ <div class="playingField">
+
+ </div>
+
+<script src="./scripts/timeTrialMode.js"></script>
+<script src="./scripts/script.js"></script>
+
+<!--script2.js is considered the main, original, working file. Contains optimizations over script.-->
+</body>
+
+</html>
