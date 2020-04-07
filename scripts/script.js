@@ -1,27 +1,31 @@
 'use strict'
-let numberOfLetters = document.querySelector('.startingLetters').value
-const startBtn = document.querySelector('.startBtn');
-const resetBtn = document.querySelector('.resetBtn');
-const playingField = document.querySelector('.playingField');
-let allSquares;
-let allSquaresArr = [];
-let lettersFound = 0;
-const alphabet =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-let letterUses =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; 
-let playingFieldArr;
-let randomIndex = 0;
-let indexModifier = 0;
-let lettersPlaced = 0;
-let letterUseCounter = 0;
-let setLetterSucceeded = false;
-let setLetterModeToggle = 'random';
 
-function setLetter(letter){ /*Tries a random slot. If it's full, it repeatedly tries to set the letter in the adjescent index, until it finds one that's not taken.*/
+const vars = {
+    startBtn: document.querySelector('.startBtn'),
+    playingField: document.querySelector('.playingField'),
+    numberOfLetters: document.querySelector('.startingLetters').value,
+    allSquares: undefined,
+    allSquaresArr : [],
+    lettersFound: 0,
+    firstPick: undefined,
+    secondPick: undefined,
+    firstPickIndex: undefined,
+    secondPickIndex: undefined,
+    firstPickTextContent: undefined,
+    secondPickTextContent: undefined,
+    firstPickTimeoutHolder: undefined,
+    secondPickTimeoutHolder: undefined,
+    toggleVisibilityLocked: false,
+}
+
+function setLetter(letter, randomIndex, playingFieldArr, indexModifier){ /*Tries a random slot. If it's full, it repeatedly tries to set the letter in the adjescent index, until it finds one that's not taken.*/
+    let setLetterModeToggle = 'random';
+    let setLetterSucceeded = false;
+
     if(setLetterModeToggle === 'random') {
-        indexModifier = (generateRandomNumber(0,playingFieldArr.length -1) - randomIndex); //BETWEEN 0 and the length - randomIndex;
+        indexModifier = (generateRandomNumber(0,playingFieldArr.length -1) - randomIndex); //Between 0 and the length - randomIndex;
         setLetterModeToggle = 'adjescent';
     }
-    setLetterSucceeded = false;
 
     if(indexModifier + randomIndex > (playingFieldArr.length -1)){ /*if the composite index is too big for the array, loop to [0]*/
         indexModifier = -1 -randomIndex;      
@@ -35,74 +39,76 @@ function setLetter(letter){ /*Tries a random slot. If it's full, it repeatedly t
     }else{
         indexModifier+=1;
 
-        if(setLetterSucceeded === false){    
+        if(setLetterSucceeded === false){
             if(playingFieldArr.includes('')){
-                setLetter(letter);
+                setLetter(letter, randomIndex, playingFieldArr, indexModifier);
             };
         };
     };
 }
 
 function setPlayingField(){
-    firstPick = undefined;
-    secondPick = undefined;
-    playingField.innerHTML = ''; /*Deletes all tiles from a potential previous game.*/
-    numberOfLetters = document.querySelector('.startingLetters').value;
+    const alphabet =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    let letterUses =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    let playingFieldArr = new Array((+vars.numberOfLetters)*2);
+    let randomIndex = generateRandomNumber(0,playingFieldArr.length -1); //gives random index for the letter.
 
-    if ((numberOfLetters > 26) || (numberOfLetters <= 0) || ((numberOfLetters/numberOfLetters)!= 1) || ('' + numberOfLetters.length)>2) {
+    vars.numberOfLetters = document.querySelector('.startingLetters').value;
+    
+    vars.lettersFound = 0;
+    vars.firstPick = undefined;
+    vars.secondPick = undefined;
+    vars.playingField.innerHTML = ''; /*Deletes all tiles from a potential previous game.*/
+    
+
+    if ((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!= 1) || ('' + vars.numberOfLetters.length)>2) {
         alert("Please input a whole number between 1 and 26");
         return undefined;
     }
-    playingFieldArr = new Array((+numberOfLetters)*2);
+    
     playingFieldArr.fill('');
     letterUses.fill(0);
 
-    function fillArr(){
+    for(let i=0; i<=playingFieldArr.length-1; i+=1){ 
 
-        for(let i=0; i<=playingFieldArr.length-1; i+=1){ 
+        let indexModifier = 1;
+             //gives random index for the letter.
+        if(letterUses[i] < 2){ //if the letter's been used less than 2 times.
 
-            indexModifier = 1;
-
-            randomIndex = generateRandomNumber(0,playingFieldArr.length -1); //gives random index for the letter.
-            if(letterUses[i] < 2){ //if the letter's been used less than 2 times.
-
-                if(playingFieldArr[randomIndex] === ''){
+            if(playingFieldArr[randomIndex] === ''){
                     playingFieldArr[randomIndex] = alphabet[i];
                     letterUses[i]+=1;
-                }else if(playingFieldArr[randomIndex] !== ''){
-                    setLetter(alphabet[i]);
+            }else if(playingFieldArr[randomIndex] !== ''){
+                    setLetter(alphabet[i], randomIndex, playingFieldArr, indexModifier); //TEST: Trying to pass var decalration instead of haveing lobal variable.
                     letterUses[i]+=1; //still increment it, so long as the function sets it right.
-                }
-                if(letterUses[i] < 2){  /*if the current letter hasn't been set twice, make 'i' target the same letter again.*/
-                    i-=1;
-                };
             }
+            if(letterUses[i] < 2){  /*if the current letter hasn't been set twice, make 'i' target the same letter again.*/
+                i-=1;
+            };
         }
-        lettersPlaced+=1;
     }
-    fillArr();
-    buildGUI();   
+    buildGUI(playingFieldArr);
 }
-startBtn.addEventListener('click', startTimeTrial);         //CONSIDER CHANGING THE NAME TO SOMETHING LESS CONFUSING.
 
 function generateRandomNumber(start,end){ //includes start and end numbers.
     let randomNumber = Math.floor(Math.random() * (end - start + 1)) + start;    
     return randomNumber;
 }
 /*
-Makes 4-5-square container and fills it with 5 letter-boxes.
+Makes tile container and fills it with 5 letter-boxes.
 When its' full, it loops to make another square container div and append the next letter-holders to it.
 Keeps going till all the letters in the array have been assigned to letter-holders.
 */
 
-function buildGUI(){ 
+function buildGUI(playingFieldArr){
     let arrayProgress = 0;
     let containerHolder = [];
     let contaierDivHolder;
     let squareHolder;
     let spanHolder;
     let containerDivHolder;
-    allSquaresArr = [];
+
+    vars.allSquaresArr = [];
     arrayProgress = 0;
     for(let j=0;j<Math.ceil(playingFieldArr.length/5); j+=1){
         containerDivHolder = document.createElement('div');
@@ -121,90 +127,88 @@ function buildGUI(){
                 arrayProgress+=1;
             }
         }
-
-        playingField.appendChild(containerDivHolder);
+        vars.playingField.appendChild(containerDivHolder);
     }
-    allSquares = document.querySelectorAll('.square');
+    vars.allSquares = document.querySelectorAll('.square');
     
-    for(let i=0;i<allSquares.length;i+=1){
-        allSquaresArr.push(allSquares[i]);
+    for(let i=0;i<vars.allSquares.length;i+=1){
+        vars.allSquaresArr.push(vars.allSquares[i]);
     };
-    for(let q=0; q<allSquares.length; q+=1){
-        allSquares[q].addEventListener('click', toggleVisibility);
+    for(let q=0; q<vars.allSquares.length; q+=1){
+        
+        vars.allSquares[q].addEventListener('click', resolveTileInteractions);
+        
     };
+    return(vars.allSquaresArr, vars.allSquares);
 }
 
-let firstPick;
-let firstPickTextContent;
-let firstPickIndex;
-let secondPick;
-let secondPickTextContent;
-let secondPickIndex;
-let toggleVisibilityLocked = false;
-let firstPickTimeoutHolder;
-let secondPickTimeoutHolder;
-function toggleVisibility(){
-    if(toggleVisibilityLocked === true){
+function resolveTileInteractions(){
+
+    if(vars.toggleVisibilityLocked === true){
         return undefined;
     }
-    if(firstPick === undefined){    //if you're selecting a first tile.
-        firstPick = this;
-        firstPick.classList.add('squareSelected');
-        firstPick.classList.remove('active');
-        firstPickTextContent = this.childNodes[0].textContent;
-        firstPickIndex = allSquaresArr.indexOf(this);
-        firstPickTimeoutHolder = allSquaresArr[firstPickIndex];
+    if(vars.firstPick === undefined){    //if you're selecting a first tile.
+        vars.firstPick = this;
+        vars.firstPick.classList.add('squareSelected');
+        vars.firstPick.classList.remove('active');
+        vars.firstPickTextContent = this.childNodes[0].textContent;
+        vars.firstPickIndex = vars.allSquaresArr.indexOf(this);
+        vars.firstPickTimeoutHolder = vars.allSquaresArr[vars.firstPickIndex];
 
-    }else if((firstPick !== undefined) && (secondPick === undefined)){ //if you're selecting a second tile.
-        secondPick = this;
-        secondPickTextContent = this.childNodes[0].textContent;
-        secondPickIndex = allSquaresArr.indexOf(this);
-        secondPickTimeoutHolder = allSquaresArr[secondPickIndex];
-        if((firstPickTextContent === secondPickTextContent) &&(firstPick !== secondPick)){
+    }else if((vars.firstPick !== undefined) && (vars.secondPick === undefined)){ //if you're selecting a second tile.
+        vars.secondPick = this;
+        vars.secondPickTextContent = this.childNodes[0].textContent;
+        vars.secondPickIndex = vars.allSquaresArr.indexOf(this);
+        vars.secondPickTimeoutHolder = vars.allSquaresArr[vars.secondPickIndex];
+        if((vars.firstPickTextContent === vars.secondPickTextContent) &&(vars.firstPick !== vars.secondPick)){
             console.log('Found 2 of a kind!');
-            lettersFound+=1;        /*Counts until all letters are found, so it can alert() the end-game.*/
+            vars.lettersFound+=1;        /*Counts until all letters are found, so it can alert() the end-game.*/
 
             /*give the matching elements a green background, make the letters visible, block further tile animations.*/
-            for(let x = 0; x<allSquares.length; x+=1){ 
-                if(allSquares[x].childNodes[0].textContent === firstPickTextContent){
-                    allSquares[x].classList.add('squareGuessed', 'guessedAnimation');
-                    allSquares[x].classList.remove('active');
-                    allSquares[x].childNodes[0].classList.remove('hidden');
-                    allSquares[x].removeEventListener('click', toggleVisibility);
+            for(let x = 0; x<vars.allSquares.length; x+=1){ 
+                if(vars.allSquares[x].childNodes[0].textContent === vars.firstPickTextContent){
+                    vars.allSquares[x].classList.add('squareGuessed', 'guessedAnimation');
+                    vars.allSquares[x].classList.remove('active');
+                    vars.allSquares[x].childNodes[0].classList.remove('hidden');
+                    vars.allSquares[x].removeEventListener('click', resolveTileInteractions);
                 }
             }
-            if(+numberOfLetters === lettersFound){ /*If all the letters are found, congratulate the player.*/
-                lettersFound = 0;
+            if(+vars.numberOfLetters === vars.lettersFound){ /*If all the letters are found, congratulate the player.*/
+                vars.lettersFound = 0;
                 alert('You win! Press the Start button again, if you wish to play more.')
             }
 
-            firstPick = undefined;
-            secondPick = undefined;
+            vars.firstPick = undefined;
+            vars.secondPick = undefined;
 
             }else{ /*Block interactions for a bit, make selected elements flash in red, show the letters, then fade them again.*/
-            toggleVisibilityLocked = true;
-            firstPick.classList.remove('active'); 
-            firstPick.classList.add('squareWrong');
+            vars.toggleVisibilityLocked = true;
+            vars.firstPick.classList.remove('active'); 
+            vars.firstPick.classList.add('squareWrong');
 
-            secondPick.classList.remove('active'); 
-            secondPick.classList.add('squareWrong')
-            allSquaresArr[firstPickIndex].childNodes[0].classList.remove('hidden');
-            secondPickTimeoutHolder.childNodes[0].classList.remove('hidden');
+            vars.secondPick.classList.remove('active'); 
+            vars.secondPick.classList.add('squareWrong')
+            vars.allSquaresArr[vars.firstPickIndex].childNodes[0].classList.remove('hidden');
+            vars.secondPickTimeoutHolder.childNodes[0].classList.remove('hidden');
 
             setTimeout(()=>{
-                firstPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
-                firstPickTimeoutHolder.classList.add('active');
-                firstPickTimeoutHolder.childNodes[0].classList.add('hidden');
+                vars.firstPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
+                vars.firstPickTimeoutHolder.classList.add('active');
+                vars.firstPickTimeoutHolder.childNodes[0].classList.add('hidden');
                 
-                secondPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
-                secondPickTimeoutHolder.classList.add('active');
-                secondPickTimeoutHolder.childNodes[0].classList.add('hidden');
+                vars.secondPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
+                vars.secondPickTimeoutHolder.classList.add('active');
+                vars.secondPickTimeoutHolder.childNodes[0].classList.add('hidden');
 
-                toggleVisibilityLocked = false;
+                vars.toggleVisibilityLocked = false;
             }, 600);
 
-            firstPick = undefined;
-            secondPick = undefined;
+            vars.firstPick = undefined;
+            vars.secondPick = undefined;
         }; 
     }
 }
+
+vars.startBtn.addEventListener('click', startTimeTrial);         //CONSIDER CHANGING THE NAME TO SOMETHING LESS CONFUSING.
+
+//TRY TO SEPARATE THE SETTIMEOUT INTO A SEPARATE FUNCTION WHICH IS CALLED WITH ARGUMENTS.

@@ -1,6 +1,8 @@
-* { font-family: 'Times New Roman', Comic-sans, Candara, Garamond;
-margin:0;
-padding:0;
+body { 
+	font-family: "Comic-sans MS", Candara, Garamond;
+	font-weight: 0;
+	margin:0;
+	padding:0;
 }
 
 body{background-color:rgb(193, 154, 107)} 
@@ -36,17 +38,7 @@ body{background-color:rgb(193, 154, 107)}
 
 
 
-.startBtn{
-
-	margin: 0px 2vw;
-	position: relative;
-	min-width: 100px;
-	min-height: 45px;
-	width: 11vw;
-	height: 10vh;
-}
-
-.resetBtn{
+.startBtn, .resetBtn{
 
 	margin: 0px 2vw;
 	position: relative;
@@ -97,7 +89,7 @@ body{background-color:rgb(193, 154, 107)}
 	animation: spin 3s;
 }
 
-@keyframes spin{		/*Testing some animation effects when a square is selected*/
+@keyframes spin{		
 	0%{transform: rotate3d(0, 1, 0, 0deg);}
 	50%{transform: rotate3d(0, 1, 0, 540deg);}
 	100%{transform: rotate3d(0, 1, 0, 360deg);}
@@ -108,11 +100,6 @@ body{background-color:rgb(193, 154, 107)}
 }
 .squareGuessed{
 	background-color: green;
-}
-
-.hidden{
-	opacity: 0;
-	transition: .3s ease-in-out;
 }
 
 .clockDiv{
@@ -126,3 +113,7 @@ body{background-color:rgb(193, 154, 107)}
 	opacity: 0.7;
 }
 
+.hidden{
+	opacity: 0;
+	transition: .3s ease-in-out;
+}

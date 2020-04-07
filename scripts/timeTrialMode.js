@@ -3,11 +3,14 @@ const inputs = document.querySelector('.inputs');
 const clockFace = document.querySelector('.clockFace');
 let clockDiv = document.querySelector('.clockDiv');
 
+let baseTime;
+
 function startTimeTrial(){
 
 	if(checkHolder.checked){
 		clockDiv.classList.remove('hidden');
-		console.log('Settign the clock');
+		console.log('Setting the clock.');
+		baseTime = new Date;
 		setClock();
 	}else{
 		setPlayingField();
@@ -35,7 +38,7 @@ On 0,
 //const clockFace = document.querySelector('.clock');
 
 function setClock(){ /*Does a weird thing when you list hours - starts counting from 2 hours up.*/
-	let baseTime = new Date;
+	//let baseTime = new Date;
 	function getTimeDifference(){
 	  let timeNow = new Date;
 	  let timeDifferenceNumHolder = timeNow - baseTime;
