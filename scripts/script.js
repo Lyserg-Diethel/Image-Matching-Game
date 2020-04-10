@@ -48,12 +48,11 @@ function setLetter(letter, randomIndex, playingFieldArr, indexModifier){ /*Tries
 }
 
 function setPlayingField(){
+    vars.numberOfLetters = document.querySelector('.startingLetters').value;
     const alphabet =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     let letterUses =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     let playingFieldArr = new Array((+vars.numberOfLetters)*2);
     let randomIndex = generateRandomNumber(0,playingFieldArr.length -1); //gives random index for the letter.
-
-    vars.numberOfLetters = document.querySelector('.startingLetters').value;
     
     vars.lettersFound = 0;
     vars.firstPick = undefined;
@@ -70,9 +69,8 @@ function setPlayingField(){
     letterUses.fill(0);
 
     for(let i=0; i<=playingFieldArr.length-1; i+=1){ 
-
         let indexModifier = 1;
-             //gives random index for the letter.
+
         if(letterUses[i] < 2){ //if the letter's been used less than 2 times.
 
             if(playingFieldArr[randomIndex] === ''){
@@ -139,7 +137,7 @@ function buildGUI(playingFieldArr){
         vars.allSquares[q].addEventListener('click', resolveTileInteractions);
         
     };
-    return(vars.allSquaresArr, vars.allSquares);
+    
 }
 
 function resolveTileInteractions(){
@@ -165,17 +163,25 @@ function resolveTileInteractions(){
             vars.lettersFound+=1;        /*Counts until all letters are found, so it can alert() the end-game.*/
 
             /*give the matching elements a green background, make the letters visible, block further tile animations.*/
-            for(let x = 0; x<vars.allSquares.length; x+=1){ 
+            for(let x = 0; x<vars.allSquares.length; x+=1){     /*OPTIMIZE BY CHANGING THE LOOP TO JUST TARGET first&secondPick*/
                 if(vars.allSquares[x].childNodes[0].textContent === vars.firstPickTextContent){
                     vars.allSquares[x].classList.add('squareGuessed', 'guessedAnimation');
                     vars.allSquares[x].classList.remove('active');
                     vars.allSquares[x].childNodes[0].classList.remove('hidden');
                     vars.allSquares[x].removeEventListener('click', resolveTileInteractions);
                 }
+
             }
             if(+vars.numberOfLetters === vars.lettersFound){ /*If all the letters are found, congratulate the player.*/
                 vars.lettersFound = 0;
-                alert('You win! Press the Start button again, if you wish to play more.')
+
+                if(trialVars.checkHolder.value === 'on'){
+                    clearInterval(trialVars.clockIntervalHolder);
+                    trialVars.clockHand.style.animationPlayState = "paused";
+                    alert(`You win! It took you ${trialVars.clockNumbers.textContent}! Press the Start button again, if you wish to play more.`);
+                }else{
+                    alert(`You win! Press the Start button again, if you wish to play more.`);
+                }
             }
 
             vars.firstPick = undefined;
@@ -211,4 +217,4 @@ function resolveTileInteractions(){
 
 vars.startBtn.addEventListener('click', startTimeTrial);         //CONSIDER CHANGING THE NAME TO SOMETHING LESS CONFUSING.
 
-//TRY TO SEPARATE THE SETTIMEOUT INTO A SEPARATE FUNCTION WHICH IS CALLED WITH ARGUMENTS.
+//CONSIDER SEPARATING THE SETTIMEOUT INTO A SEPARATE FUNCTION WHICH IS CALLED WITH ARGUMENTS.
