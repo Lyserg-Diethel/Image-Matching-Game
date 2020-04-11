@@ -49,6 +49,12 @@ function setLetter(letter, randomIndex, playingFieldArr, indexModifier){ /*Tries
 
 function setPlayingField(){
     vars.numberOfLetters = document.querySelector('.startingLetters').value;
+
+    if ((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!= 1) || ('' + vars.numberOfLetters.length)>2) {
+        alert("Please input a whole number between 1 and 26");
+        return undefined;
+    }
+    
     const alphabet =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     let letterUses =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     let playingFieldArr = new Array((+vars.numberOfLetters)*2);
@@ -59,11 +65,6 @@ function setPlayingField(){
     vars.secondPick = undefined;
     vars.playingField.innerHTML = ''; /*Deletes all tiles from a potential previous game.*/
     
-
-    if ((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!= 1) || ('' + vars.numberOfLetters.length)>2) {
-        alert("Please input a whole number between 1 and 26");
-        return undefined;
-    }
     
     playingFieldArr.fill('');
     letterUses.fill(0);
