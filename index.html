@@ -15,6 +15,8 @@
 </head>
 
 <body>
+ <div class="gameOverFacade notDisplayed"></div>
+ <div class='gameOverPopup notDisplayed'></div>
 
  <div class='startPrompt'>
  	<label for='startingLetters' class="startLetterLabel">Select amount of pairs to match (up to 26):</label>
@@ -23,14 +25,31 @@
  		<div class="clockNumbers" data-nums='four' data-colons='one-ish'></div>
  	</div>
  	<br>
-	<div class="inputs menuVisibility">
-		<!--<button class='resetBtn menuVisibility'>Reset</button>-->
-	 	<input type="number" name="startingLetters" class="startingLetters menuVisibility" autofocus>
-	 	<button class='startBtn menuVisibility'>Start</button><br>
- 		<label for='startingLetters' class="timeTrialLabel menuVisibility" >Time trial mode:</label>
-	 	<input type="checkbox" name="timeTrialMode" class="timeTrialCheckbox menuVisibility" title='Check here if you want to track complation time.'>
+	<div class="inputs">
+		<!--<button class='resetBtn'>Reset</button>-->
+	 	<input type="number" name="startingLetters" class="startingLetters" autofocus>
+	 	<button class='startBtn'>Start</button><br>
  	</div>
- 	
+
+ 	<div class='minorControlMenuDisplayButton'><br>
+	 	<div class='minorControlMenu'>
+
+	 		<span class="minorControl">
+		 		Replace letters with Aurebesh:<span class='checkbox fontChangeCheckbox checkboxSelected' title='Check here to replace the English letters with those from the Star Wars universe!'> </span>
+		 	</span>
+
+		 	<span class="minorControl">
+		 		<span class="timeLimitOptions notDisplayed">
+			 		<input type="number" name="timeLimitMins" class='timeLimitMinInput timeLimitOpt' placeholder="'" value='0' inputmode="numeric">
+			 		<input type="number" name="timeLimitSecs" class='timeLimitSecInput timeLimitOpt' placeholder='"' value='0' inputmode="numeric">
+		 		</span>
+		 		Time Limit Mode (max 1h):<span class='checkbox timeLimitCheckbox' title='Check here if you want to play with a time limit.'></span>
+		 	</span>
+
+		 	<span class="minorControl">
+		 		Time Trial Mode:<span class='checkbox timeTrialCheckbox' title='Check here if you want to track complation time with no limit.'></span>
+		 	</span>
+	 	</div>
  	
 
  </div>
@@ -39,7 +58,7 @@
 
  </div>
 
-<script src="./scripts/timeTrialMode.js"></script>
+<script src="./scripts/gameModes.js"></script>
 <script src="./scripts/script.js"></script>
 
 <!--script2.js is considered the main, original, working file. Contains optimizations over script.-->

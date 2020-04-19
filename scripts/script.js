@@ -4,6 +4,13 @@ const vars = {
     startBtn: document.querySelector('.startBtn'),
     playingField: document.querySelector('.playingField'),
     numberOfLetters: document.querySelector('.startingLetters').value,
+    minorControlMenuDisplayButton: document.querySelector('.minorControlMenuDisplayButton'),
+    minorControlMenu: document.querySelector('.minorControlMenu'),
+    gameOverFacade: document.querySelector('.gameOverFacade'),
+    gameOverPopup: document.querySelector('.gameOverPopup'),
+    timeLimitCheckbox: document.querySelector('.timeLimitCheckbox'),
+    timeTrialCheckbox: document.querySelector('.timeTrialCheckbox'),
+    fontChangeCheckbox: document.querySelector('.fontChangeCheckbox'),
     allSquares: undefined,
     allSquaresArr : [],
     lettersFound: 0,
@@ -48,24 +55,40 @@ function setLetter(letter, randomIndex, playingFieldArr, indexModifier){ /*Tries
 }
 
 function setPlayingField(){
-    vars.numberOfLetters = document.querySelector('.startingLetters').value;
-
-    if ((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!= 1) || ('' + vars.numberOfLetters.length)>2) {
-        alert("Please input a whole number between 1 and 26");
-        return undefined;
-    }
-    
-    const alphabet =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+	vars.numberOfLetters = document.querySelector('.startingLetters').value;
+	const alphabet =['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     let letterUses =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     let playingFieldArr = new Array((+vars.numberOfLetters)*2);
     let randomIndex = generateRandomNumber(0,playingFieldArr.length -1); //gives random index for the letter.
-    
     vars.lettersFound = 0;
     vars.firstPick = undefined;
     vars.secondPick = undefined;
     vars.playingField.innerHTML = ''; /*Deletes all tiles from a potential previous game.*/
-    
-    
+    vars.toggleVisibilityLocked = false;
+	let mode;
+
+	if(trialVars.timeTrialClassList.contains('checkboxSelected')){
+		mode = 'timeTrial';
+	}else if(trialVars.timeLimitClassList.contains('checkboxSelected')){
+		mode = 'timeLimit';
+	}
+
+    if((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!= 1) || ('' + vars.numberOfLetters.length)>2) {
+        alert("Please input a whole number between 1 and 26");
+        return undefined;
+    }
+    if(vars.fontChangeCheckbox.classList.contains('checkboxSelected')){
+    	vars.playingField.style.fontFamily = 'Aurebesh_Bold';
+    }else{
+    	vars.playingField.style.fontFamily = 'Comic-sans MS, Candara, Garamond';
+    }
+
+    checkControlOptions(mode);
+    if(trialVars.error === true){
+    	return;
+    }
+    vars.minorControlMenu.classList.add('notDisplayed');
+
     playingFieldArr.fill('');
     letterUses.fill(0);
 
@@ -95,7 +118,7 @@ function generateRandomNumber(start,end){ //includes start and end numbers.
 }
 /*
 Makes tile container and fills it with 5 letter-boxes.
-When its' full, it loops to make another square container div and append the next letter-holders to it.
+When it's full, it loops to make another square container div and append the next letter-holders to it.
 Keeps going till all the letters in the array have been assigned to letter-holders.
 */
 
@@ -133,12 +156,9 @@ function buildGUI(playingFieldArr){
     for(let i=0;i<vars.allSquares.length;i+=1){
         vars.allSquaresArr.push(vars.allSquares[i]);
     };
-    for(let q=0; q<vars.allSquares.length; q+=1){
-        
+    for(let q=0; q<vars.allSquares.length; q+=1){ 
         vars.allSquares[q].addEventListener('click', resolveTileInteractions);
-        
     };
-    
 }
 
 function resolveTileInteractions(){
@@ -171,18 +191,9 @@ function resolveTileInteractions(){
                     vars.allSquares[x].childNodes[0].classList.remove('hidden');
                     vars.allSquares[x].removeEventListener('click', resolveTileInteractions);
                 }
-
             }
             if(+vars.numberOfLetters === vars.lettersFound){ /*If all the letters are found, congratulate the player.*/
-                vars.lettersFound = 0;
-
-                if(trialVars.checkHolder.value === 'on'){
-                    clearInterval(trialVars.clockIntervalHolder);
-                    trialVars.clockHand.style.animationPlayState = "paused";
-                    alert(`You win! It took you ${trialVars.clockNumbers.textContent}! Press the Start button again, if you wish to play more.`);
-                }else{
-                    alert(`You win! Press the Start button again, if you wish to play more.`);
-                }
+                gameOver('win');
             }
 
             vars.firstPick = undefined;
@@ -215,7 +226,73 @@ function resolveTileInteractions(){
         }; 
     }
 }
+function gameOver(condition){
+	if(condition === 'win'){
+		vars.lettersFound = 0;
 
-vars.startBtn.addEventListener('click', startTimeTrial);         //CONSIDER CHANGING THE NAME TO SOMETHING LESS CONFUSING.
+        if((trialVars.mode === 'timeTrial') || (trialVars.mode === 'timeLimit')){
+            clearInterval(trialVars.clockIntervalHolder);
+            trialVars.clockHand.style.animationPlayState = "paused";
+            vars.gameOverFacade.classList.remove('notDisplayed');
+            if(trialVars.mode === 'timeLimit'){
+            	vars.gameOverPopup.textContent =`You win with ${trialVars.clockNumbers.textContent} left! Press the Start button again, if you wish to play more.`;
+            }else{
+            	vars.gameOverPopup.textContent =`You win! It took you ${trialVars.clockNumbers.textContent}! Press the Start button again, if you wish to play more.`;
+        	}
+            vars.gameOverPopup.classList.remove('notDisplayed');
+        }else{
+        	vars.gameOverFacade.classList.remove('notDisplayed');
+            vars.gameOverPopup.textContent = `You win! Press the Start button again, if you wish to play more.`;
+            vars.gameOverPopup.classList.remove('notDisplayed');
+        }
+    }else if(condition === 'loss'){
+        	trialVars.clockHand.style.animationPlayState = "paused";
+            vars.gameOverFacade.classList.remove('notDisplayed');
+            vars.gameOverPopup.textContent =`You lose! ${trialVars.initialTimeLimit} was not enough! Press the Start button again, if you wish to play more.`;
+            vars.gameOverPopup.classList.remove('notDisplayed');
+		}
+}
+
+function hideGameOverOverlay(){
+	vars.gameOverFacade.classList.add('notDisplayed');
+	vars.gameOverPopup.classList.add('notDisplayed');
+}
+
+function checkboxSelector(e){
+	e.target.classList.toggle('checkboxSelected');
+	if(e.target === vars.timeLimitCheckbox){
+		vars.timeTrialCheckbox.classList.remove('checkboxSelected');
+		if(trialVars.timeLimitOptions.classList.contains('notDisplayed')){
+		 		trialVars.timeLimitOptions.classList.remove('notDisplayed');
+		}else{
+			trialVars.timeLimitOptions.classList.add('notDisplayed');
+		};
+	}else if(e.target === vars.timeTrialCheckbox){
+		vars.timeLimitCheckbox.classList.remove('checkboxSelected');
+		trialVars.timeLimitOptions.classList.add('notDisplayed');
+	}
+}
+
+(function(){
+	let checks = document.querySelectorAll('.checkbox');
+	for(let checkbox of checks){
+  	checkbox.addEventListener('click', checkboxSelector);
+}
+})();
+
+vars.gameOverFacade.addEventListener('click', hideGameOverOverlay);
+vars.gameOverPopup.addEventListener('click', hideGameOverOverlay);
+vars.minorControlMenuDisplayButton.addEventListener('click', (e)=>{
+	if(e.target === vars.minorControlMenuDisplayButton) {
+		vars.minorControlMenu.classList.remove('notDisplayed');
+	}else if((e.currentTarget === vars.minorControlMenuDisplayButton) && !((e.target.classList.contains('checkbox')) || e.target.tagName ==='INPUT')) {
+		vars.minorControlMenu.classList.add('notDisplayed')};
+});
+vars.startBtn.addEventListener('click', setPlayingField);
+document.addEventListener('keyup', event=> {
+	if(event.keyCode === 13){
+		setPlayingField();
+	}
+});
 
 //CONSIDER SEPARATING THE SETTIMEOUT INTO A SEPARATE FUNCTION WHICH IS CALLED WITH ARGUMENTS.
