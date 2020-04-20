@@ -25,12 +25,14 @@ function checkControlOptions(mode){
 			trialVars.error = true;
 		}else if((typeof (+minutes) !== 'number') || (minutes >=60 || minutes <0)) { /*The input was somehow not a number or over an hour*/
 			trialVars.error = true;
-		}else if((typeof (+seconds) !== 'number') || (seconds >=60 || seconds <1)) { /*The seconds are enough to make a whole minute*/
+		}else if((typeof (+seconds) !== 'number') || (seconds >=60 )) { /*The seconds are enough to make a whole minute*/
+			trialVars.error = true;			
+		}else if(minutes < 1 && seconds <1){ /*The seconds and minutes are less than 1*/
 			trialVars.error = true;
-		};
+		}
 		if(trialVars.error === true){
 			alert('Please enter a time between 00:01 and 59:59');
-			return undefined;
+			return	;
 		};
 	}
 
@@ -44,7 +46,7 @@ function checkControlOptions(mode){
 		}else{
 			let mins = trialVars.timeLimitMinInput.value;
 			let secs = trialVars.timeLimitSecInput.value;
-			trialVars.initialTimeLimit = `${mins} min ${secs} sec`;
+			trialVars.initialTimeLimit = `${mins || '0'} min ${secs || 0} sec`;
 			trialVars.endTime = new Date(0);
 			trialVars.endTime.setSeconds(trialVars.endTime.getSeconds() + secs);
 			trialVars.endTime.setMinutes(trialVars.endTime.getMinutes() + mins);

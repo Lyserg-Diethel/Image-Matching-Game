@@ -69,6 +69,7 @@ input{
 	z-index: 98;
 	overflow: visible;
 	transition: .3s;
+	opacity: .9;
 }
 
 .minorControlMenuDisplayButton::before{
@@ -130,6 +131,7 @@ input{
 }
 
 .minorControl input{
+	color: orange;
 	min-width: 2vw;
 	min-height: 2vw;
 	padding: 10px 0;
