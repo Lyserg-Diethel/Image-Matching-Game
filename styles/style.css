@@ -180,7 +180,7 @@ input{
 	margin: 1%;
 	font-size: 5vw;
 	text-align: center;
-	line-height: 180%;
+	line-height: 10vw;
 	border: .5px solid rgb(30,15,15);
 	box-sizing: border-box;
 	display: inline-block;

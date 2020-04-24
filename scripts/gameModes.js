@@ -81,7 +81,12 @@ function timeTrial(){	/*Sets the clock to count from 0 till whenever the player 
 	    seconds<10 ? seconds= '0'+seconds : seconds=seconds;
 	    let timeBuild = `${minutes}:${seconds}`;
 	    trialVars.clockNumbers.textContent=`${timeBuild}`;
-	    return timeBuild;		
+	    																						//WORKING HERE TO STOP GAME AFTER 1 hour.
+	    if((trialVars.clockNumbers.textContent === "59:59")){ /*If it takes an hour, announce Game Over.*/
+			gameLost();
+			return;
+		}
+		return timeBuild;
 	}
 
 function timeLimit(preCall = 0){	/*Sets the clock to cound down from a given time*/
@@ -95,10 +100,15 @@ function timeLimit(preCall = 0){	/*Sets the clock to cound down from a given tim
 	trialVars.clockNumbers.textContent=`${timeBuild}`;
 
 	if((trialVars.endTime.getSeconds() === 0) && (trialVars.endTime.getMinutes() === 0)){ /*If the time is up, announce Game Over.*/
-		clearInterval(trialVars.clockIntervalHolder);
-		gameOver('loss');
-		vars.toggleVisibilityLocked = true;
+		gameLost();
 		return;
 	}
 	return timeBuild;	
 	}
+
+function gameLost() {
+	clearInterval(trialVars.clockIntervalHolder);
+	gameOver('loss');
+	vars.toggleVisibilityLocked = true;
+	return;
+}

@@ -3,7 +3,7 @@
 const vars = {
     startBtn: document.querySelector('.startBtn'),
     playingField: document.querySelector('.playingField'),
-    numberOfLetters: document.querySelector('.startingLetters').value,
+    numberOfLetters: document.querySelector('.startingLetters'),
     minorControlMenuDisplayButton: document.querySelector('.minorControlMenuDisplayButton'),
     minorControlMenu: document.querySelector('.minorControlMenu'),
     gameOverFacade: document.querySelector('.gameOverFacade'),
@@ -11,6 +11,7 @@ const vars = {
     timeLimitCheckbox: document.querySelector('.timeLimitCheckbox'),
     timeTrialCheckbox: document.querySelector('.timeTrialCheckbox'),
     fontChangeCheckbox: document.querySelector('.fontChangeCheckbox'),
+    gameOver: false,
     allSquares: undefined,
     allSquaresArr : [],
     lettersFound: 0,
@@ -65,6 +66,7 @@ function setPlayingField(){
     vars.secondPick = undefined;
     vars.playingField.innerHTML = ''; /*Deletes all tiles from a potential previous game.*/
     vars.toggleVisibilityLocked = false;
+    vars.gameOver = false;
 	let mode;
 
 	if(trialVars.timeTrialClassList.contains('checkboxSelected')){
@@ -73,7 +75,7 @@ function setPlayingField(){
 		mode = 'timeLimit';
 	}
 
-    if((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!= 1) || ('' + vars.numberOfLetters.length)>2) {
+    if((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!== 1) || (vars.numberOfLetters.length)>2) {
         alert("Please input a whole number between 1 and 26");
         return undefined;
     }
@@ -84,7 +86,7 @@ function setPlayingField(){
     }
 
     checkControlOptions(mode);
-    if(trialVars.error === true){
+    if(trialVars.error){
     	return;
     }
     vars.minorControlMenu.classList.add('notDisplayed');
@@ -124,8 +126,6 @@ Keeps going till all the letters in the array have been assigned to letter-holde
 
 function buildGUI(playingFieldArr){
     let arrayProgress = 0;
-    let containerHolder = [];
-    let contaierDivHolder;
     let squareHolder;
     let spanHolder;
     let containerDivHolder;
@@ -210,15 +210,17 @@ function resolveTileInteractions(){
             vars.secondPickTimeoutHolder.childNodes[0].classList.remove('hidden');
 
             setTimeout(()=>{
-                vars.firstPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
-                vars.firstPickTimeoutHolder.classList.add('active');
-                vars.firstPickTimeoutHolder.childNodes[0].classList.add('hidden');
-                
-                vars.secondPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
-                vars.secondPickTimeoutHolder.classList.add('active');
-                vars.secondPickTimeoutHolder.childNodes[0].classList.add('hidden');
-
-                vars.toggleVisibilityLocked = false;
+            	
+	                vars.firstPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
+	                vars.firstPickTimeoutHolder.classList.add('active');
+	                vars.firstPickTimeoutHolder.childNodes[0].classList.add('hidden');
+	                
+	                vars.secondPickTimeoutHolder.classList.remove('squareSelected', 'squareWrong');
+	                vars.secondPickTimeoutHolder.classList.add('active');
+	                vars.secondPickTimeoutHolder.childNodes[0].classList.add('hidden');
+	            if(!vars.gameOver){
+                	vars.toggleVisibilityLocked = false;
+                }
             }, 600);
 
             vars.firstPick = undefined;
@@ -246,18 +248,17 @@ function gameOver(condition){
             vars.gameOverPopup.classList.remove('notDisplayed');
         }
     }else if(condition === 'loss'){
+    		vars.gameOver = true;
         	trialVars.clockHand.style.animationPlayState = "paused";
             vars.gameOverFacade.classList.remove('notDisplayed');
-            vars.gameOverPopup.textContent =`You lose! ${trialVars.initialTimeLimit} was not enough! Press the Start button again, if you wish to play more.`;
+            vars.gameOverPopup.textContent =`You lose! ${trialVars.initialTimeLimit || "An hour"} was not enough! Press the Start button again, if you wish to play more.`;
             vars.gameOverPopup.classList.remove('notDisplayed');
 		}
 }
-
 function hideGameOverOverlay(){
 	vars.gameOverFacade.classList.add('notDisplayed');
 	vars.gameOverPopup.classList.add('notDisplayed');
 }
-
 function checkboxSelector(e){
 	e.target.classList.toggle('checkboxSelected');
 	if(e.target === vars.timeLimitCheckbox){
@@ -294,5 +295,4 @@ document.addEventListener('keyup', event=> {
 		setPlayingField();
 	}
 });
-
 //CONSIDER SEPARATING THE SETTIMEOUT INTO A SEPARATE FUNCTION WHICH IS CALLED WITH ARGUMENTS.
