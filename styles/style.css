@@ -181,16 +181,6 @@ input{
 	transition: .3s;
 }
 
-@media (max-width: 600px){	/*TESTING*/
-	.square{
-		margin:0.5%;
-		font-size: 8vw;
-		width:19vw;
-		line-height: 16vw;
-		height: 16vw;
-	}
-}
-
 .active:hover{
 	background-color: rgb(150, 84, 67);
 	transition: .3s;
@@ -298,4 +288,22 @@ input{
 	max-height: 6em;
 	background-color: #654330;
 	z-index: 101;
+}
+
+
+@media (max-width: 600px){	/*TESTING*/
+	.square{
+		margin:0.5%;
+		font-size: 8vw;
+		width:19vw;
+		line-height: 16vw;
+		height: 16vw;
+	}
+	.gameOverPopup{
+		padding: 5vw;
+		width: 80%;
+		max-height: 8em;
+		font-size: 5vw;
+		line-height: 3em;
+	}
 }
