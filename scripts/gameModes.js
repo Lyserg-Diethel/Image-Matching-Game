@@ -115,6 +115,6 @@ function timeLimit(preCall = 0){	/*Sets the clock to cound down from a given tim
 function gameLost() {
 	clearInterval(trialVars.clockIntervalHolder);
 	gameOver('loss');
-	vars.toggleVisibilityLocked = true;
+	vars.tileInteractionsLocked = true;
 	return;
 }

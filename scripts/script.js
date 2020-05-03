@@ -59,7 +59,7 @@ function setPlayingField(){
     vars.firstPick = undefined;
     vars.secondPick = undefined;
     vars.playingField.innerHTML = ''; /*Deletes all tiles from a potential previous game.*/
-    vars.toggleVisibilityLocked = false;
+    vars.tileInteractionsLocked = false;
     vars.gameOver = false;
 	let mode;
 
@@ -72,7 +72,7 @@ function setPlayingField(){
 
     if((vars.numberOfLetters > 26) || (vars.numberOfLetters <= 0) || ((vars.numberOfLetters/vars.numberOfLetters)!== 1) || (vars.numberOfLetters.length)>2) {
         alert("Please input a whole number between 1 and 26");
-        return undefined;
+        return;
     }
 
     checkControlOptions(mode);
@@ -147,8 +147,8 @@ function buildGUI(playingFieldArr){
 }
 
 function resolveTileInteractions(){
-    if(vars.toggleVisibilityLocked === true){
-        return undefined;
+    if(vars.tileInteractionsLocked === true){
+        return;
     }
     if(vars.firstPick === undefined){    //if you're selecting a first tile.
         vars.firstPick = this;
@@ -164,7 +164,7 @@ function resolveTileInteractions(){
         vars.secondPickIndex = vars.allSquaresArr.indexOf(this);
         vars.secondPickTimeoutHolder = vars.allSquaresArr[vars.secondPickIndex];
         if((vars.firstPickTextContent === vars.secondPickTextContent) &&(vars.firstPick !== vars.secondPick)){ //if they match:
-            vars.lettersFound+=1;        /*Counts until all letters are found, so it can alert() the end-game.*/
+            vars.lettersFound+=1;        /*Counts until all letters are found, so it can announce the end-game.*/
             
             revealGuessedTiles(vars.firstPick, vars.secondPick);
 
@@ -183,7 +183,7 @@ function resolveTileInteractions(){
 /*give the matching elements a green background, make the letters visible, block further tile animations.*/
 function revealGuessedTiles(firstPick, secondPick){ 
     for (let each of arguments){
-	    each.classList.add('squareGuessed', 'guessedAnimation');
+	    each.classList.add('squareGuessed');
 	    each.classList.remove('active');
 	    each.childNodes[0].classList.remove('hidden');
 	    each.removeEventListener('click', resolveTileInteractions);
@@ -191,7 +191,7 @@ function revealGuessedTiles(firstPick, secondPick){
 }
 function resumeGame(){
 	 /*Block interactions for a bit, make selected elements flash in red, show the letters, then fade them again.*/
-    vars.toggleVisibilityLocked = true;
+    vars.tileInteractionsLocked = true;
     vars.firstPick.classList.remove('active'); 
     vars.firstPick.classList.add('squareWrong');
 
@@ -209,14 +209,13 @@ function resumeGame(){
 	    vars.secondPickTimeoutHolder.classList.add('active');
 	    vars.secondPickTimeoutHolder.childNodes[0].classList.add('hidden');
 	    if(!vars.gameOver){
-        	vars.toggleVisibilityLocked = false;
+        	vars.tileInteractionsLocked = false;
         }
     }, 600);	
 }
 
 function gameOver(condition){
 	if(condition === 'win'){
-		vars.lettersFound = 0;
 
         if((trialVars.mode === 'timeTrial') || (trialVars.mode === 'timeLimit')){
             clearInterval(trialVars.clockIntervalHolder);

@@ -189,10 +189,11 @@ input{
 .squareSelected{
 	background-color: rgb(150, 84, 115);
 }
-.guessedAnimation{
+
+.squareGuessed{
+	background-color: green;
 	animation: spin 3s;
 }
-
 @keyframes spin{		
 	0%{transform: rotate3d(0, 1, 0, 0deg);}
 	50%{transform: rotate3d(0, 1, 0, 540deg);}
@@ -201,9 +202,6 @@ input{
 
 .squareWrong{
 	background-color: red;
-}
-.squareGuessed{
-	background-color: green;
 }
 
 .clockDiv{
@@ -233,7 +231,6 @@ input{
 	width: 4px;
 	height: 50%;
 	transform-origin: bottom;
-	transition: .3s;
 }
 .clockHandRotate{
 	animation: rotate 60s infinite;
@@ -256,7 +253,6 @@ input{
 
 .hidden{
 	opacity: 0;
-	transition: .3s ease-in-out;
 }
 
 .notDisplayed{
@@ -290,8 +286,7 @@ input{
 	z-index: 101;
 }
 
-
-@media (max-width: 600px){	/*TESTING*/
+@media (max-width: 600px){
 	.square{
 		margin:0.5%;
 		font-size: 8vw;
