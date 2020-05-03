@@ -27,7 +27,6 @@ const vars = {
 }
 /*Tries random slots twice. If they're full, it repeatedly tries to set the letter in the adjescent index, until it finds one that's not taken.*/
 function setLetter(letter, randomIndex, playingFieldArr, indexModifier, setLetterMode = 'random', retryRandom = true){ 
-    let setLetterSucceeded = false;
 
     if(setLetterMode === 'random') {
         indexModifier = (generateRandomNumber(0,playingFieldArr.length -1) - randomIndex); //Between 0 and the length - randomIndex;
@@ -41,15 +40,11 @@ function setLetter(letter, randomIndex, playingFieldArr, indexModifier, setLette
     };
     if(playingFieldArr[randomIndex + indexModifier] === ''){	//if the slot is empty, put the letter there.
         playingFieldArr[randomIndex + indexModifier] = letter;
-        setLetterSucceeded = true;
         return;
     }else{
         indexModifier+=1;
-
-        if(setLetterSucceeded === false){
-            if(playingFieldArr.includes('')){
-                setLetter(letter, randomIndex, playingFieldArr, indexModifier, setLetterMode, retryRandom);
-            };
+        if(playingFieldArr.includes('')){
+            setLetter(letter, randomIndex, playingFieldArr, indexModifier, setLetterMode, retryRandom);
         };
     };
 }
