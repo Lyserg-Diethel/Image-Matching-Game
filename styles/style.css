@@ -209,7 +209,7 @@ input{
 .clockDiv{
 	border: 1px solid black;
 	border-radius: 100px;
-	font-size:12px;
+	font-size:4vmin;
 	position: fixed;
 	top: 0px;
 	left:0px;
