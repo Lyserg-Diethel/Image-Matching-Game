@@ -20,6 +20,12 @@ function checkControlOptions(mode){
 	let minutes = trialVars.timeLimitMinInput.value;
 	let seconds = trialVars.timeLimitSecInput.value;
 
+    if(vars.fontChangeCheckbox.classList.contains('checkboxSelected')){
+    	vars.playingField.style.fontFamily = 'Aurebesh_Bold';
+    }else{
+    	vars.playingField.style.fontFamily = 'Comic-sans MS, Candara, Garamond';
+    }	
+
 	if(trialVars.mode === 'timeLimit'){	/*if Time Limit mode was selected, tell setPlayingField to abort if:*/
 		if(+minutes + +seconds === 0){	/*The time limit is 0*/
 			trialVars.error = true;
@@ -32,7 +38,7 @@ function checkControlOptions(mode){
 		}
 		if(trialVars.error === true){
 			alert('Please enter a time between 00:01 and 59:59');
-			return	;
+			return;
 		};
 	}
 
@@ -81,7 +87,7 @@ function timeTrial(){	/*Sets the clock to count from 0 till whenever the player 
 	    seconds<10 ? seconds= '0'+seconds : seconds=seconds;
 	    let timeBuild = `${minutes}:${seconds}`;
 	    trialVars.clockNumbers.textContent=`${timeBuild}`;
-	    																						//WORKING HERE TO STOP GAME AFTER 1 hour.
+	    																						
 	    if((trialVars.clockNumbers.textContent === "59:59")){ /*If it takes an hour, announce Game Over.*/
 			gameLost();
 			return;
