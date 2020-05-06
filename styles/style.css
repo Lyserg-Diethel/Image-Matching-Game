@@ -269,7 +269,7 @@ input{
 }
 
 .gameOverPopup{
-	padding: 5vh 0;
+	padding-bottom: 4%;
 	text-align: center;
 	line-height: 3em;
 	font-size: 3vw;
