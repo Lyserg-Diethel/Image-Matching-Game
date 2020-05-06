@@ -3,6 +3,7 @@ body {
 	font-weight: 0;
 	margin:0;
 	padding:0;
+	background-color:rgb(193, 154, 107)
 }
 
 @font-face
@@ -10,8 +11,6 @@ body {
     font-family: 'Aurebesh_Bold';
   	src: url('../fonts/Aurebesh_Bold.ttf');
 }
-
-body{background-color:rgb(193, 154, 107)} 
 
 input{
 	border: 0px;
