@@ -280,7 +280,7 @@ input{
 	position: fixed;
 	width: 70%;
 	height: 30vh;
-	max-height: 6em;
+	min-height: 7em;
 	background-color: #654330;
 	z-index: 101;
 }
